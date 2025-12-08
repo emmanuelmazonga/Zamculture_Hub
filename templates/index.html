@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+ZamCulture Hub - Home
+{% endblock %}
+
+{% block main %}
+<h2 class="mb-4">Featured Stories</h2>
+
+<!--Featured carousel-->
+<div id="featuredCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% for i, story in enumerate(featured_stories)%}
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+            <img src="{{ url_for('static', filename='images/' ~ story.image) }}" class="d-block w-100" alt="{{ story.title }}">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                <h5>{{ story.title }}</h5>
+                <p>{{ story.category }} | {{ story.author}} | {{ story.created_at.strftime("%b %d, %Y")}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel " data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<h2 class="mb-4">Latest Stories</h2>
+
+<div class="row row-cols-1 row-cols-md-3 g-">
+    {% for story in latest_stories %}
+    <div class="col">
+        <div class="card h-100">
+            {% if story.image_path %}
+            <img src="{{ url_for('static', filename=story.image_path) }}" class="card-img-top" alt="{{ story.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ story.title }}</h5>
+                <p class="card-text">{{ story.content[:150] }}
+                    {% if story.content|length > 150 %}...{% endif %}</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">{{ story,category }} | {{ story.author }} | {{ story.created_at.strftime('%b' %d, %Y) }}</small>
+                <a href="{{ url_for('story', story_id=story.id) }}" class="btn btn-sm btn-primary float-end">Read More</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+        
