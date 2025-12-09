@@ -7,6 +7,10 @@ from cs50 import SQL
 
 app = Flask(__name__)
 
+# set secret key for sessions
+app.secret_key = os.urandom(24)
+
+
 # confihure CS50 Library to use SQLite database
 db = SQL("sqlite:///zamculture.db")
 
@@ -117,3 +121,12 @@ def logout():
     session.clear()
     flash("logged out successfully")
     return redirect("/")
+
+@app.route("/submit", methods=["GET", "POST"])
+def submit():
+    # For now, just render a placeholder template
+    return render_template("submit.html")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
