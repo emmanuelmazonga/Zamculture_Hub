@@ -8,6 +8,14 @@ from cs50 import SQL
 app = Flask(__name__)
 
 # set secret key for sessions
+app.config["SECRET_KEY"] = os.urandom(24)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+# confihure CS50 Library to use SQLite database
+db = SQL("sqlite:///zamculture.db")
+# set secret key for sessions
 app.secret_key = os.urandom(24)
 
 

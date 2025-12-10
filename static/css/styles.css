@@ -1,0 +1,114 @@
+/* --- General Body & Typography --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa; /* light background for readability */
+    color: #074047;
+}
+
+/* --- Navbar --- */
+.navbar {
+    background-color: #074047 !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: #1DA27E !important;
+}
+
+/* --- Dropdown Menu --- */
+.dropdown-menu {
+    background-color: #074047;
+}
+
+.dropdown-item {
+    color: #ffffff;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #1DA27E;
+    color: #ffffff;
+}
+
+/* --- Carousel --- */
+.carousel-caption {
+    background-color: rgba(7, 64, 71, 0.7); /* semi-transparent dark overlay */
+    color: #ffffff;
+    border-radius: 0.5rem;
+}
+
+.carousel-item img {
+    height: 400px;
+    object-fit: cover;
+}
+
+/* --- Cards (Latest Stories) --- */
+.card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    color: #074047;
+    font-weight: 600;
+}
+
+.card-footer {
+    background-color: #6fe331;
+    border-top: 1px solid #dee2e6;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: #1DA27E;
+    border-color: #1DA27E;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #074047;
+    border-color: #074047;
+}
+
+/* --- Footer --- */
+footer {
+    background-color: #074047;
+    color: #ffffff;
+}
+
+/* --- Forms (e.g., Login/Register) --- */
+form input, form select, form textarea {
+    border-radius: 0.5rem;
+    border: 1px solid #4e7aa5;
+    padding: 0.5rem;
+}
+
+form button {
+    border-radius: 0.5rem;
+}
+
+/* --- Misc --- */
+h2 {
+    color: #074047;
+    font-weight: 600;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: #1DA27E;
+    text-decoration: none;
+}
+bg-light {
+    --bs-bg-opacity: 1;
+    background-color: rgb(27 52 77) !important;
+}
