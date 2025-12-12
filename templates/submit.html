@@ -5,6 +5,34 @@ Submit Story
 {% endblock %}
 
 {% block main %}
-<h2>Submit a Story</h2>
-<p>Form will go here.</p>
+<div class="col-md-8 mx-auto">
+    <h2 class="mb-4 text-center">Submit Your Story</h2>
+    <form action="/submit" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Story Title</label>
+            <input type="text" autofocus class="form-control" id="title" name="title" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category" required>
+                <option value="" disabled selected>Select a category</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.name }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Story Content</label>
+            <textarea class="form-control" id="content" name="content" rows="8" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">Upload Image (optional)</label>
+            <input class="form-control" type="file" id="image" name="image" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Submit Story</button>
+    </form>
+
+</div>
 {% endblock %}

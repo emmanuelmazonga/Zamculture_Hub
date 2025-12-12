@@ -83,7 +83,7 @@ footer {
     color: #ffffff;
 }
 
-/* --- Forms (e.g., Login/Register) --- */
+/* --- forms --- */
 form input, form select, form textarea {
     border-radius: 0.5rem;
     border: 1px solid #4e7aa5;

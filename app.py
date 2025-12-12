@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, session, flash
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from datetime import datetime
 from cs50 import SQL
 
@@ -132,8 +133,41 @@ def logout():
 
 @app.route("/submit", methods=["GET", "POST"])
 def submit():
-    # For now, just render a placeholder template
-    return render_template("submit.html")
+    # submit a new story page
+    if not session.get("user_id"):
+        flash("login to submit a story")
+        return redirect("/login")
+    
+    categories = db.execute("SELECT * FROM categories")
+    
+    if request.method == "POST":
+        title = request.form.get("title")
+        category = request.form.get("category")
+        content = request.form.get("content")
+        image = request.files.get("image_path") 
+
+        if not title or not category or not content:
+            flash("enter all fields")
+            return redirect("/submit")
+        
+        image_path = None
+        if image and image.filename != "":
+            filename = secure_filename(image.filename)
+            static_folder = os.path.join(app.root_path, 'static')
+            image_folder = os.path.join(static_folder, 'images')
+            image_path = f"images/{image_path.filename}"
+            os.makedirs(image_folder, exist_ok=True)
+            image.save(os.path.join(image_folder, filename))
+
+        db.execute(
+                    "INSERT INTO stories (user_id, title, category, content, image_path, apoproved created_at) VALUES (?, ?, ?, ?, ?, 0, ?)",
+                    session["user_id"], title, category, content, image_path, datetime.now()
+        )
+
+        flash("story submitted for review")
+        return redirect("/")
+
+    return render_template("submit.html", categories=categories)
 
 
 if __name__ == "__main__":
