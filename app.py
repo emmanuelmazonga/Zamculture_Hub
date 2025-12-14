@@ -160,8 +160,8 @@ def submit():
             image.save(os.path.join(image_folder, filename))
 
         db.execute(
-                    "INSERT INTO stories (user_id, title, category, content, image_path, apoproved created_at) VALUES (?, ?, ?, ?, ?, 0, ?)",
-                    session["user_id"], title, category, content, image_path, datetime.now()
+                    "INSERT INTO stories (user_id, title, category, content, image_path, approved, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    session["user_id"], title, category, content, image_path, 0, datetime.now()
         )
 
         flash("story submitted for review")
@@ -169,6 +169,51 @@ def submit():
 
     return render_template("submit.html", categories=categories)
 
+@app.route("/story/<int:story_id>")
+def story(story_id):
+    """Render a specific story page."""
+    story = db.execute("""
+        SELECT stories.*, users.users.username AS author
+        FROM stories
+        JOIN users ON stories.user_id = users.id
+        WHERE stories.id = ? AND stories.approved = 1;
+        """, story_id)  
+        # if story not found show error
+    if story(len) != 1:
+        return "story not found", 404
+        
+        story = story[0]
+
+    # Get comments of the story
+    comments = db.execute("""
+        SELECT comments.content, comments.created_at, users.username AS author
+        FROM comments
+        JOIN users ON comments.user_id = users.id
+        WHERE comments.story_id = ?
+        ORDER BY cooments.created_at ASC
+        """, story_id)    
+    return render_template("story.html", story=story, comments=comments)    
+
+@app.route("/comment/<int:story_id>", methods=["POST"])
+def comment(story_id):
+    """Handle comment submision"""
+    # check if user us logged in
+    if not session("user_id"):
+        return redirect("/login")
+    
+    content = request.form.get("content")
+
+    # Validate input
+    if not content:
+        return redirect(f"/story/{story_id}")
+
+    # Insert cooment
+    db.execute("""
+        INSERT INTO comments (user_id, story_id, content)
+        VALUES (?,?,?)
+    """, session["user_id"], story_id, content
+    )
+    return redirect(f"/story/{story_id}")
 
 if __name__ == "__main__":
     app.run(debug=True)

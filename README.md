@@ -7,7 +7,7 @@ A web application built in Python (Flask) that combines:
 
 ## Features
 - User authentication (Register/Login)
-- Create, edit, delete posts
+- Create, edit, delete posts (stories)
 - Categories + Tags
 - Image uploads
 - Responsive UI

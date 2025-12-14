@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ story.title }}
+{% endblock %}
+
+{% block main %}
+<h2 class="mb-2">{{ story.title }}</h2>
+
+<P class="text-muted mb-4">
+    {{ story.category}} |
+    {{ story.author}} | 
+    {{ story.created_at }}
+</P>
+
+<!--Stoey image-->
+{% if story.image_path %}
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', fiename=story.image_path) }}" alt="Story Image" class="img-fluid rounded">
+    </div>
+{% endif %}
+
+<!--Content-->
+<p style="white-space: pre-line;">
+    {{ story.content }}
+</p>
+
+<hr>
+<!-- Comments Section -->
+<h4 class="mb-4">Comments</h4>
+{% if session.get("user.id")%}
+    <form action="{{ url_for('comment', story.id=story.id) }}" method="post" class="mb-4">
+        <div class="mb-3">
+            <label for="comment" class="form-label">Add a Comment</label>
+            <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Write a comment..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+    </form>
+{% else %}
+    <p>
+        <a href="{{ url_for('login') }}">Login</a>
+         to comment.
+    </p>
+{% endif %}
+<hr>
+<!--Show comment-->
+{% for comment in comments %}
+ <div class="mb-3">
+    <strong>{{ comment.username }}</strong>
+    <small>{{ comment.created_at }}</small>
+    <p>{{ comment.content }}</p>
+ </div>
+ {% else %}
+    <p>No comment yet</p>
+{% endfor %}
+
+{% endblock %}
