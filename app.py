@@ -118,7 +118,9 @@ def login():
             return redirect("/login")
         
         # remember user
+        user = rows[0]
         session["user_id"] = rows[0]["id"]
+        session["role"] = user["role"]
 
         flash("logged in successfully")
         return redirect("/")
@@ -214,6 +216,53 @@ def comment(story_id):
     """, session["user_id"], story_id, content
     )
     return redirect(f"/story/{story_id}")
+
+@app.route("/admin")
+def admin():
+    """admin approval page"""
+    # check if user is logged in and is admin
+    if not session.get("user_id"):
+        flash("login to access admin page")
+        return redirect("/login")
+    
+    #check if user is admin
+    user = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+
+    if not user or user[0]["role"] != "admin":
+        flash("access denied")
+        return redirect("/")
+
+    # get unapproved stories
+    stories = db.execute("""
+        SELECT stories.id, stories.title, users.username AS author, stories.created_at, stories.content, stories.image_path, stories.category
+        FROM stories
+        JOIN users ON stories.user_id = users.id
+        WHERE stories.approved = 0
+        ORDER BY stories.created_at ASC;
+    """)
+    return render_template("admin.html", stories=stories)
+
+@app.route("/approve/<int:story_id>")
+def approve(story_id):
+    """Approve a story route"""
+    # must be logged in as admin
+    if not session.get("user_id"):
+        flash("login to access admin page")
+        return redirect("/login")
+    
+    # confirm user is admin
+    user = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+
+    if not user or user[0]["role"] != "admin":
+        flash("access denied")
+        return redirect("/")
+    
+    # approve story
+    db.execute("UPDATE stories SET approved = 1 WHERE id = ?", story_id)
+    flash("Story approved successfully")
+    return redirect("/admin")
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

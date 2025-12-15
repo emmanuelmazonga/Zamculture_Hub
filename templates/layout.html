@@ -55,6 +55,11 @@
                     </li>
 
                     {% if session.get("user_id") %}
+                         {% if session.get("role") == "admin" %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                         </li>

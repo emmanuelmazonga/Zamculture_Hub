@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Admin Panel - Login
+{% endblock %}
+
+{% block main %}
+<h2 class="mb-4">Pending Stories</h2>
+
+{% if stories %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Submitted At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for story in stories %}
+        <tr>
+            <td>{{ story.title }}</td>
+            <td>{{ story.content }}</td>
+            <td>{{ story.author }}</td>
+            <td>{{ story.category }}</td>
+            <td>{{ story.created_at }}</td>
+            <td>
+                <!--approve button-->
+                <a href="{{ url_for('approve', story_id=story.id) }}"
+                 class="btn btn-success btn-sm">
+                Approve
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No peending stories</p>
+{% endif %}
+
+{% endblock %}
