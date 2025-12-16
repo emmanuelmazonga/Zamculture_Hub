@@ -146,7 +146,7 @@ def submit():
         title = request.form.get("title")
         category = request.form.get("category")
         content = request.form.get("content")
-        image = request.files.get("image_path") 
+        image = request.files.get("image") 
 
         if not title or not category or not content:
             flash("enter all fields")
@@ -157,7 +157,7 @@ def submit():
             filename = secure_filename(image.filename)
             static_folder = os.path.join(app.root_path, 'static')
             image_folder = os.path.join(static_folder, 'images')
-            image_path = f"images/{image_path.filename}"
+            image_path = f"images/{filename}"
             os.makedirs(image_folder, exist_ok=True)
             image.save(os.path.join(image_folder, filename))
 
@@ -174,17 +174,20 @@ def submit():
 @app.route("/story/<int:story_id>")
 def story(story_id):
     """Render a specific story page."""
+
+    user = session.get("user_id")
+
     story = db.execute("""
-        SELECT stories.*, users.users.username AS author
+        SELECT stories.*, users.username AS author
         FROM stories
         JOIN users ON stories.user_id = users.id
         WHERE stories.id = ? AND stories.approved = 1;
         """, story_id)  
         # if story not found show error
-    if story(len) != 1:
+    if not story:
         return "story not found", 404
         
-        story = story[0]
+    story = story[0]
 
     # Get comments of the story
     comments = db.execute("""
@@ -192,15 +195,16 @@ def story(story_id):
         FROM comments
         JOIN users ON comments.user_id = users.id
         WHERE comments.story_id = ?
-        ORDER BY cooments.created_at ASC
+        ORDER BY comments.created_at ASC
         """, story_id)    
-    return render_template("story.html", story=story, comments=comments)    
+    return render_template("story.html", story=story, comments=comments, user=user)    
 
 @app.route("/comment/<int:story_id>", methods=["POST"])
 def comment(story_id):
     """Handle comment submision"""
     # check if user us logged in
-    if not session("user_id"):
+    user = session.get("user_id")
+    if not user:
         return redirect("/login")
     
     content = request.form.get("content")

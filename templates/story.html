@@ -8,9 +8,7 @@
 <h2 class="mb-2">{{ story.title }}</h2>
 
 <P class="text-muted mb-4">
-    {{ story.category}} |
-    {{ story.author}} | 
-    {{ story.created_at }}
+    {{ story.category}} | {{ story.author}} | {{ story.created_at }}
 </P>
 
 <!--Stoey image-->
@@ -24,12 +22,11 @@
 <p style="white-space: pre-line;">
     {{ story.content }}
 </p>
-
 <hr>
 <!-- Comments Section -->
 <h4 class="mb-4">Comments</h4>
-{% if session.get("user.id")%}
-    <form action="{{ url_for('comment', story.id=story.id) }}" method="post" class="mb-4">
+{% if user %}
+    <form action="{{ url_for('comment', story_id=story.id) }}" method="post" class="mb-4">
         <div class="mb-3">
             <label for="comment" class="form-label">Add a Comment</label>
             <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Write a comment..." required></textarea>

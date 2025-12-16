@@ -12,7 +12,13 @@ ZamCulture Hub - Home
     <div class="carousel-inner">
         {% for story in featured_stories %}
         <div class="carousel-item {% if loop.first %}active{% endif %}">
+            {% if story.image_path %}
             <img src="{{ url_for('static', filename=story.image_path) }}" class="d-block w-100" alt="{{ story.title }}">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}"
+                    class="d-block w-100"
+                    alt="No image available">
+            {% endif %}
             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
                 <h5>{{ story.title }}</h5>
                 <p>{{ story.category }} | {{ story.author }} | {{ story.created_at.strftime("%b %d, %Y") }}</p>
@@ -38,6 +44,10 @@ ZamCulture Hub - Home
         <div class="card h-100">
             {% if story.image_path %}
             <img src="{{ url_for('static', filename=story.image_path) }}" class="card-img-top" alt="{{ story.title }}">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}"
+                    class="d-block w-100"
+                    alt="No image available">
             {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ story.title }}</h5>
