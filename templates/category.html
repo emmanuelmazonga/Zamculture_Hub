@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{{ category }} | Zamculture Hub
+{% endblock %}
+
+{% block main %}
+<h2 class="mb-4">{{ category }}</h2>
+
+{% if stories %}
+<diV class="row row-cols-1 row-cols-md-2 g-4">
+    {% for story in stories %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                {% if story['image_path'] %}
+                <img src="{{ url_for('static', filename=story['image_path']) }}" class="card-img-top mb-3" alt="{{ story['title'] }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ story['title'] }}
+                    </h5>
+                    <p class="card-text">
+                        {{ story['content'][:200] }}
+                        {% if story['content']|length > 200 %}...{% endif %}
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        {{ story['author'] }} . {{ story['created_at'] }}
+                    </small>
+                    <a href="{{ url_for('story', story_id=story['id']) }}" class="btn btn-primary">
+                        Read More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No stories found in this category.</p>
+{% endif %}
+
+{% endblock %}

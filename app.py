@@ -281,7 +281,18 @@ def like(story_id):
                """, session["user_id"], story_id)
     return redirect(f"/story/{story_id}")
 
-    
+@app.route("/category/<string:category>")
+def category(category):
+    # filter stories by category
+    stories = db.execute("""
+        SELECT stories.*, users.username AS author,
+        (SELECT COUNT(*) FROM likes WHERE likes.story_id = stories.id) AS like_count
+        FROM stories JOIN  users ON stories.user_id = users.id
+        WHERE stories.category = ? AND stories.approved = 1
+        ORDER BY stories.created_at DESC;
+        """, category)
+    return render_template("category.html", stories=stories, category=category)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

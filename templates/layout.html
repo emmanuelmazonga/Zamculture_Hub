@@ -41,12 +41,12 @@
                             Categories
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Music</a></li>
-                            <li><a class="dropdown-item" href="#">History</a></li>
-                            <li><a class="dropdown-item" href="#">Literature</a></li>
-                            <li><a class="dropdown-item" href="#">Travel</a></li>
-                            <li><a class="dropdown-item" href="#">Food</a></li>
-                            <li><a class="dropdown-item" href="#">Art</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('category', category='Music') }}">Music</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('category', category='History') }}">History</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('category', category='Literature') }}">Literature</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('category', category='Travel') }}">Travel</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('category', category='Food') }}">Food</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('category', category='Art') }}">Art</a></li>
                         </ul>
                     </li>
 
