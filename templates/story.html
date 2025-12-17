@@ -22,6 +22,12 @@
 <p style="white-space: pre-line;">
     {{ story.content }}
 </p>
+<!--Like button-->
+<form action="{{ url_for('like', story_id=story['id']) }}" method="post" class="mb-4">
+    <button type="submit" class="btn btn-primary">
+        ❤️ {{ story.like_count }}
+    </button>
+</form>
 <hr>
 <!-- Comments Section -->
 <h4 class="mb-4">Comments</h4>
@@ -42,9 +48,9 @@
 <hr>
 <!--Show comment-->
 {% for comment in comments %}
- <div class="mb-3">
-    <strong>{{ comment.username }}</strong>
-    <small>{{ comment.created_at }}</small>
+ <div class="mb-3 border rounded p-3">
+    <strong>{{ comment.author }}</strong>
+    <small class="text-muted">{{ comment.created_at }}</small>
     <p>{{ comment.content }}</p>
  </div>
  {% else %}

@@ -178,9 +178,11 @@ def story(story_id):
     user = session.get("user_id")
 
     story = db.execute("""
-        SELECT stories.*, users.username AS author
+        SELECT stories.*, users.username AS author,
+        COUNT(likes.id) AS like_count
         FROM stories
         JOIN users ON stories.user_id = users.id
+        LEFT JOIN likes ON stories.id = likes.story_id
         WHERE stories.id = ? AND stories.approved = 1;
         """, story_id)  
         # if story not found show error
@@ -207,17 +209,17 @@ def comment(story_id):
     if not user:
         return redirect("/login")
     
-    content = request.form.get("content")
+    comment = request.form.get("comment")
 
     # Validate input
-    if not content:
+    if not comment:
         return redirect(f"/story/{story_id}")
 
-    # Insert cooment
+    # Insert comment
     db.execute("""
         INSERT INTO comments (user_id, story_id, content)
         VALUES (?,?,?)
-    """, session["user_id"], story_id, content
+    """, session["user_id"], story_id, comment
     )
     return redirect(f"/story/{story_id}")
 
@@ -265,6 +267,19 @@ def approve(story_id):
     db.execute("UPDATE stories SET approved = 1 WHERE id = ?", story_id)
     flash("Story approved successfully")
     return redirect("/admin")
+
+@app.route("/like/<int:story_id>", methods=["POST"])
+def like(story_id):
+    # check if user is logged in
+    if not session.get("user_id"):
+        flash("login to like stories")
+        return redirect("/login")
+
+    db.execute("""
+               INSERT OR IGNORE INTO likes (user_id, story_id)
+               VALUES (?, ?)
+               """, session["user_id"], story_id)
+    return redirect(f"/story/{story_id}")
 
     
 
