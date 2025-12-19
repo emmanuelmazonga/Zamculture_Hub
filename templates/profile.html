@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block main %}
+<h2 classs="mb-3">
+    My Profile
+</h2>
+
+<!-- Pofile for user-->
+<div class="card mb-4">
+    <div class="card-body">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Role:</strong> {{ user.role }}</p>
+    </div>
+</div>
+
+ <!--Change password form -->
+<a class="btn btn-primary mb-4" href="{{ url_for('password') }}">
+    change Password
+</a>
+
+<hr>
+<h3 class="mb-3">
+    My Stories
+</h3>
+<div class="card mb-4">
+    <div class="card-body">
+        {% if stories %}
+            <div class="list_group">
+                {% for story in stories %}
+                    <div class="list-group-item">
+                        <span>
+                            {{ story.title }}
+                            {% if not story.approved %}
+                                <span class="badge bg-warning text-dark">Pending Approval</span>
+                            {% else %}
+                                <span class="badge bg-success">Approved</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div>
+                        <small class="text-muted">{{ story.created_at.strftime("%b %d, %Y") }}</small>
+                    </div>
+                    <div>
+                        {{ story.like_count }}
+                        {% if story.like_count == 1 %}Like{% else %}Likes{% endif %}
+                        <a href="{{ url_for('story', story_id=story.id) }}" class="btn btn-sm btn-primary float-end">View</a>
+                    </div>
+                {% endfor%}
+            </div>
+        {% else %}
+            <p>You have not submitted any stories yet.</p>
+        {% endif %}
+    </div>
+</div>
+</hr>
+<!-- Footer -->
+<div class="mt-4 footer-opacity-50">
+    <footer class="text-center py-3">
+        <p class="mb-0">&copy; 2025 ZamCulture Hub | All rights reserved</p>
+    </footer>
+</div>
+{% endblock %}

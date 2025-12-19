@@ -8,7 +8,7 @@
 <h2 class="mb-2">{{ story.title }}</h2>
 
 <P class="text-muted mb-4">
-    {{ story.category}} | {{ story.author}} | {{ story.created_at }}
+    {{ story.category}} • {{ story.author}} • {{ story.created_at.strftime("%b %d, %Y") }}
 </P>
 
 <!--Stoey image-->
@@ -19,13 +19,18 @@
 {% endif %}
 
 <!--Content-->
-<p style="white-space: pre-line;">
-    {{ story.content }}
-</p>
+<div class="card mb-4">
+    <div class="card-body">
+        <p style="white-space: pre-line;">
+            {{ story.content }}
+        </p>
+    </div>
+</div>
+
 <!--Like button-->
 <form action="{{ url_for('like', story_id=story['id']) }}" method="post" class="mb-4">
     <button type="submit" class="btn btn-primary">
-        ❤️ {{ story.like_count }}
+        🩵 {{ story.like_count }}
     </button>
 </form>
 <hr>
@@ -50,7 +55,7 @@
 {% for comment in comments %}
  <div class="mb-3 border rounded p-3">
     <strong>{{ comment.author }}</strong>
-    <small class="text-muted">{{ comment.created_at }}</small>
+    <small class="text-muted">{{ comment.created_at.strftime("%b %d, %Y") }}</small>
     <p>{{ comment.content }}</p>
  </div>
  {% else %}

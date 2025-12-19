@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link href="/static/images/favicon.png" rel="icon">
 
     <title>{% block title %}ZamCulture Hub{% endblock %}</title>
     
@@ -18,12 +18,16 @@
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <!-- Navigation Bar -->
+     
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('index') }}">ZamCulture Hub</a>
+            
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ZamCulture Hub" height="50">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -34,6 +38,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('podcast') }}">Podcast</a>
+                    </li>
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
@@ -41,18 +51,24 @@
                             Categories
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('category', category='Music') }}">Music</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('category', category='History') }}">History</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('category', category='Literature') }}">Literature</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('category', category='Travel') }}">Travel</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('category', category='Food') }}">Food</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('category', category='Art') }}">Art</a></li>
+                            {% for category, count in category_counts.items() %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('category', category=category)}}">
+                                        {{ category }} ({{ count }})
+                                    </a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('submit') }}">Submit Story</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+                    </li>
+
 
                     {% if session.get("user_id") %}
                          {% if session.get("role") == "admin" %}
@@ -79,11 +95,5 @@
         {% block main %}
         {% endblock %}
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-light text-center py-3 mt-4">
-        <p class="mb-0">&copy; 2025 ZamCulture Hub | All rights reserved</p>
-    </footer>
-
 </body>
 </html>

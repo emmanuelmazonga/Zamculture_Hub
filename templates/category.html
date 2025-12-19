@@ -27,9 +27,9 @@
                 </div>
                 <div class="card-footer d-flex justify-content-between align-items-center">
                     <small class="text-muted">
-                        {{ story['author'] }} . {{ story['created_at'] }}
+                        {{ story['author'] }} • {{ story.created_at.strftime("%b %d, %Y") }}
                     </small>
-                    <a href="{{ url_for('story', story_id=story['id']) }}" class="btn btn-primary">
+                    <a href="{{ url_for('story', story_id=story['id']) }}" class="btn btn-primary" style="background-color: #387999;">
                         Read More
                     </a>
                 </div>

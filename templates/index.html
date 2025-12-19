@@ -5,10 +5,11 @@ ZamCulture Hub - Home
 {% endblock %}
 
 {% block main %}
+<h6 class="mb-4 text-center card-text">ZamCulture Hub</h6>
 <h2 class="mb-4">Featured Stories</h2>
 
 <!--Featured carousel-->
-<div id="featuredCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+<div id="featuredCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
     <div class="carousel-inner">
         {% for story in featured_stories %}
         <div class="carousel-item {% if loop.first %}active{% endif %}">
@@ -19,10 +20,12 @@ ZamCulture Hub - Home
                     class="d-block w-100"
                     alt="No image available">
             {% endif %}
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
-                <h5>{{ story.title }}</h5>
-                <p>{{ story.category }} | {{ story.author }} | {{ story.created_at.strftime("%b %d, %Y") }}</p>
-            </div>
+            <a href="{{ url_for('story', story_id=story.id) }}">
+                <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded">
+                    <h5>{{ story.title }}</h5>
+                    <p>{{ story.category }} | {{ story.author }} | {{ story.created_at.strftime("%b %d, %Y") }}</p>
+                </div>
+            </a>    
         </div>
         {% endfor %}
 
@@ -55,12 +58,18 @@ ZamCulture Hub - Home
                     {% if story.content|length > 150 %}...{% endif %}</p>
             </div>
             <div class="card-footer">
-                <small class="text-muted">{{ story.category }} | {{ story.author }} | {{ story.created_at.strftime("%b %d, %Y") }}</small>
-                <a href="{{ url_for('story', story_id=story.id) }}" class="btn btn-sm btn-primary float-end">Read More</a>
+                <small class="text-muted">{{ story.category }} • {{ story.author }} • {{ story.created_at.strftime("%b %d, %Y") }}</small>
+                <a href="{{ url_for('story', story_id=story.id) }}" class="btn btn-sm btn-primary float-end" style="background-color: #387999;">Read More</a> 
             </div>
         </div>
     </div>
     {% endfor %}
+</div>
+<!-- Footer -->
+<div class="mt-4 footer-opacity-50">
+    <footer class="text-center py-3 rounded">
+        <p class="mb-0">&copy; 2025 ZamCulture Hub | All rights reserved</p>
+    </footer>
 </div>
 {% endblock %}
         

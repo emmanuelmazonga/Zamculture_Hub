@@ -6,41 +6,71 @@ Admin Panel - Login
 
 {% block main %}
 <h2 class="mb-4">Pending Stories</h2>
+<div class="card mb-4">
+    <div class="card-body">
+        {% if stories %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Submitted At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-{% if stories %}
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Content</th>
-            <th>Author</th>
-            <th>Category</th>
-            <th>Submitted At</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% for story in stories %}
-        <tr>
-            <td>{{ story.title }}</td>
-            <td>{{ story.content }}</td>
-            <td>{{ story.author }}</td>
-            <td>{{ story.category }}</td>
-            <td>{{ story.created_at }}</td>
-            <td>
-                <!--approve button-->
-                <a href="{{ url_for('approve', story_id=story.id) }}"
-                 class="btn btn-success btn-sm">
-                Approve
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p class="text-muted">No peending stories</p>
-{% endif %}
-
+            <tbody>
+                {% for story in stories %}
+                <tr>
+                    <td>{{ story.title }}</td>
+                    <td>{{ story.content }}</td>
+                    <td>{{ story.author }}</td>
+                    <td>{{ story.category }}</td>
+                    <td>{{ story.created_at }}</td>
+                    <td>
+                        <!--approve button-->
+                        <a href="{{ url_for('approve', story_id=story.id) }}"
+                        class="btn btn-success btn-sm">
+                        Approve
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">No pending stories</p>
+        {% endif %}
+    </div>
+</div>
+<h2 class="mb-3">
+    Approved Stories
+</h2>
+<div class="card mb-4">
+    <div class="card-body">
+        {% if approved_stories %}
+            <div class="list_group">
+                {% for story in approved_stories %}
+                    <div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                {{ story.title }}
+                                    <span class="badge bg-success">Approved</span>
+                            </span>
+                            <div>
+                                <a href="{{ url_for('story', story_id=story.id) }}" class="btn btn-sm btn-primary float-end">View</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <p></p>
+                {% endfor%}
+            </div>
+        {% else %}
+            <p>No submitted stories yet.</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
