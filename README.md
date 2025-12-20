@@ -1,10 +1,10 @@
 # ZamCulture Hub
-#### Video Demo: <URL https://youtu.be/Lv_8xI0Td_8>
+#### Video Demo: <https://youtu.be/Lv_8xI0Td_8>
 #### Description:ZamCulture Hub is a community-driven storytelling platform focused on Zambian culture, history, lifestyle, music, and opinion. It allows users to submit stories, engage through likes and comments, and features an admin moderation system to ensure quality content.
 
 
 
-🔗 **Live Site:** *(add your Render URL here)*  
+🔗 **Live Site:** *(<https://zamculture-hub.onrender.com>)*  
 🎙 **Podcast:** Integrated via embedded player from external platform (Spotify)
 
 ---
