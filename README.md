@@ -1,5 +1,4 @@
 # ZamCulture Hub
-#### Video Demo: <https://youtu.be/Lv_8xI0Td_8>
 #### Description:ZamCulture Hub is a community-driven storytelling platform focused on Zambian culture, history, lifestyle, music, and opinion. It allows users to submit stories, engage through likes and comments, and features an admin moderation system to ensure quality content.
 
 

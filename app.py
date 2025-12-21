@@ -14,15 +14,21 @@ app.config["SECRET_KEY"] = os.urandom(24)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
-
 # confihure CS50 Library to use SQLite database
-db = SQL("sqlite:///zamculture.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    # Render/Postgres
+    db = SQL(DATABASE_URL)
+else:
+    # Local development (SQLite)
+    db = SQL("sqlite:///zamculture.db")
+
+db.execute("SET timezone = 'UTC'")
+
 # set secret key for sessions
 app.secret_key = os.urandom(24)
 
-
-# confihure CS50 Library to use SQLite database
-db = SQL("sqlite:///zamculture.db")
 
 @app.context_processor
 def inject_category_counts():
