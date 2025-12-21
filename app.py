@@ -110,6 +110,15 @@ def about():
     """Render the about page."""
     return render_template("about.html")
 
+@app.route("/test-db")
+def test_db():
+    try:
+        result = db.execute("SELECT 1;")
+        return f"Database connected! Result: {result}"
+    except Exception as e:
+        return f"Error: {e}"
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register a new user."""
