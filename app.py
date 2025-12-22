@@ -16,7 +16,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure database
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = "postgresql://zamculture_user:rkolBCyFvGDQhSJ4mUt2fa3U44InXVnT@dpg-d54ic615pdvs73bir6bg-a.frankfurt-postgres.render.com/zamculture_pxun"
 if DATABASE_URL:
     # Render/Postgres
     db = SQL(DATABASE_URL)
