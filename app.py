@@ -24,9 +24,9 @@ db = SQL(DATABASE_URL)
 # Ensure timezone is UTC
 db.execute("SET timezone = 'UTC'")
 
-# --------------------------------------------------
+
 # Context processor for category counts
-# --------------------------------------------------
+
 @app.context_processor
 def inject_category_counts():
     """Inject category counts into all templates."""
@@ -191,14 +191,9 @@ def submit():
             flash("Enter all fields")
             return redirect("/submit")
 
+        # only use default image because upload feature not configured
         image_path = None
-        if image and image.filename != "":
-            filename = secure_filename(image.filename)
-            static_folder = os.path.join(app.root_path, 'static')
-            image_folder = os.path.join(static_folder, 'images')
-            os.makedirs(image_folder, exist_ok=True)
-            image_path = f"images/{filename}"
-            image.save(os.path.join(image_folder, filename))
+        
 
         db.execute("""
             INSERT INTO stories (user_id, title, category, content, image_path, approved, created_at)
