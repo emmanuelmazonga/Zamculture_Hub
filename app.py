@@ -36,7 +36,7 @@ def inject_category_counts():
     rows = db.execute("""
         SELECT category, COUNT(*) AS count
         FROM stories
-        WHERE approved = 1
+        WHERE approved = TRUE
         GROUP BY category;
     """)
     category_counts = {row['category']: row['count'] for row in rows}
@@ -71,7 +71,7 @@ def index():
                stories.content, stories.created_at, users.username AS author
         FROM stories
         JOIN users ON stories.user_id = users.id
-        WHERE stories.approved = 1
+        WHERE stories.approved = TRUE
         ORDER BY stories.created_at DESC
         LIMIT 3;
     """)
@@ -80,7 +80,7 @@ def index():
                stories.content, stories.created_at, users.username AS author
         FROM stories
         JOIN users ON stories.user_id = users.id
-        WHERE stories.approved = 1
+        WHERE stories.approved = TRUE
         ORDER BY stories.created_at DESC
         LIMIT 9;
     """)
@@ -206,7 +206,7 @@ def submit():
         db.execute("""
             INSERT INTO stories (user_id, title, category, content, image_path, approved, created_at)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
-        """, session["user_id"], title, category, content, image_path, 0, datetime.utcnow())
+        """, session["user_id"], title, category, content, image_path, FALSE, datetime.utcnow())
         flash("Story submitted for review")
         return redirect("/")
     return render_template("submit.html", categories=categories)
@@ -223,7 +223,7 @@ def story(story_id):
         FROM stories
         JOIN users ON stories.user_id = users.id
         LEFT JOIN likes ON stories.id = likes.story_id
-        WHERE stories.id = $1 AND stories.approved = 1
+        WHERE stories.id = $1 AND stories.approved = TRUE
         GROUP BY stories.id, users.username
     """, story_id)
     if not rows:
@@ -242,30 +242,12 @@ def story(story_id):
         WHERE comments.story_id = $1
         ORDER BY comments.created_at ASC
     """, story_id)
+
     for comment in comments:
         if isinstance(comment["created_at"], str):
             comment["created_at"] = datetime.strptime(comment["created_at"], "%Y-%m-%d %H:%M:%S")
 
     return render_template("story.html", story=story, comments=comments, user=user)
-
-# --------------------------------------------------
-# Comment submission
-# --------------------------------------------------
-@app.route("/comment/<int:story_id>", methods=["POST"])
-def comment(story_id):
-    user = session.get("user_id")
-    if not user:
-        return redirect("/login")
-
-    comment_text = request.form.get("comment")
-    if not comment_text:
-        return redirect(f"/story/{story_id}")
-
-    db.execute("""
-        INSERT INTO comments (user_id, story_id, content)
-        VALUES ($1, $2, $3)
-    """, session["user_id"], story_id, comment_text)
-    return redirect(f"/story/{story_id}")
 
 # --------------------------------------------------
 # Admin
@@ -286,7 +268,7 @@ def admin():
                stories.content, stories.image_path, stories.category
         FROM stories
         JOIN users ON stories.user_id = users.id
-        WHERE stories.approved = 0
+        WHERE stories.approved = FALSE
         ORDER BY stories.created_at ASC;
     """)
     approved_stories = db.execute("""
@@ -294,7 +276,7 @@ def admin():
                stories.content, stories.image_path, stories.category
         FROM stories
         JOIN users ON stories.user_id = users.id
-        WHERE stories.approved = 1
+        WHERE stories.approved = TRUE
         ORDER BY stories.created_at ASC;
     """)
     return render_template("admin.html", stories=stories, approved_stories=approved_stories)
@@ -313,7 +295,7 @@ def approve(story_id):
         flash("Access denied")
         return redirect("/")
 
-    db.execute("UPDATE stories SET approved = 1 WHERE id = $1", story_id)
+    db.execute("UPDATE stories SET approved = TRUE WHERE id = $1", story_id)
     flash("Story approved successfully")
     return redirect("/admin")
 
@@ -326,7 +308,6 @@ def like(story_id):
         flash("Login to like stories")
         return redirect("/login")
 
-    # Postgres version of INSERT OR IGNORE
     db.execute("""
         INSERT INTO likes (user_id, story_id)
         VALUES ($1, $2)
@@ -346,7 +327,7 @@ def category(category):
                (SELECT COUNT(*) FROM likes WHERE likes.story_id = stories.id) AS like_count
         FROM stories
         JOIN users ON stories.user_id = users.id
-        WHERE stories.category = $1 AND stories.approved = 1
+        WHERE stories.category = $1 AND stories.approved = TRUE
         ORDER BY stories.created_at DESC
     """, category)
 
