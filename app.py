@@ -246,6 +246,22 @@ def story(story_id):
 
     return render_template("story.html", story=story, comments=comments, user=user)
 
+@app.route("/comment/<int:story_id>", methods=["POST"])
+def comment(story_id):
+    user = session.get("user_id")
+    if not user:
+        return redirect("/login")
+
+    comment_text = request.form.get("comment")
+    if not comment_text:
+        return redirect(f"/story/{story_id}")
+
+    db.execute("""
+        INSERT INTO comments (user_id, story_id, content)
+        VALUES (?, ?, ?)
+    """, session["user_id"], story_id, comment_text)
+    return redirect(f"/story/{story_id}")
+
 # --------------------------------------------------
 # Admin
 # --------------------------------------------------
