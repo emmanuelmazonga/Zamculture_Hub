@@ -128,14 +128,14 @@ def register():
             return redirect("/register")
 
         # Check username availability
-        rows = db.execute("SELECT * FROM users WHERE username = $1", username)
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
         if rows:
             flash("Username taken")
             return redirect("/register")
 
         # Insert user
         hash_pw = generate_password_hash(password)
-        db.execute("INSERT INTO users (username, hash) VALUES ($1, $2)", username, hash_pw)
+        db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash_pw)
         flash("Registered successfully")
         return redirect("/login")
     return render_template("register.html")
@@ -153,7 +153,7 @@ def login():
             flash("Must provide username and password")
             return redirect("/login")
 
-        rows = db.execute("SELECT * FROM users WHERE username = $1", username)
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
             flash("Invalid username or password")
             return redirect("/login")
@@ -205,7 +205,7 @@ def submit():
 
         db.execute("""
             INSERT INTO stories (user_id, title, category, content, image_path, approved, created_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """, session["user_id"], title, category, content, image_path, FALSE, datetime.utcnow())
         flash("Story submitted for review")
         return redirect("/")
@@ -223,7 +223,7 @@ def story(story_id):
         FROM stories
         JOIN users ON stories.user_id = users.id
         LEFT JOIN likes ON stories.id = likes.story_id
-        WHERE stories.id = $1 AND stories.approved = TRUE
+        WHERE stories.id = ? AND stories.approved = TRUE
         GROUP BY stories.id, users.username
     """, story_id)
     if not rows:
@@ -239,7 +239,7 @@ def story(story_id):
         SELECT comments.content, comments.created_at, users.username AS author
         FROM comments
         JOIN users ON comments.user_id = users.id
-        WHERE comments.story_id = $1
+        WHERE comments.story_id = ?
         ORDER BY comments.created_at ASC
     """, story_id)
 
@@ -258,7 +258,7 @@ def admin():
         flash("Login to access admin page")
         return redirect("/login")
 
-    user = db.execute("SELECT * FROM users WHERE id = $1", session["user_id"])
+    user = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
     if not user or user[0]["role"] != "admin":
         flash("Access denied")
         return redirect("/")
@@ -290,12 +290,12 @@ def approve(story_id):
         flash("Login to access admin page")
         return redirect("/login")
 
-    user = db.execute("SELECT * FROM users WHERE id = $1", session["user_id"])
+    user = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
     if not user or user[0]["role"] != "admin":
         flash("Access denied")
         return redirect("/")
 
-    db.execute("UPDATE stories SET approved = TRUE WHERE id = $1", story_id)
+    db.execute("UPDATE stories SET approved = TRUE WHERE id = ?", story_id)
     flash("Story approved successfully")
     return redirect("/admin")
 
@@ -310,7 +310,7 @@ def like(story_id):
 
     db.execute("""
         INSERT INTO likes (user_id, story_id)
-        VALUES ($1, $2)
+        VALUES (?, ?)
         ON CONFLICT DO NOTHING
     """, session["user_id"], story_id)
 
@@ -327,7 +327,7 @@ def category(category):
                (SELECT COUNT(*) FROM likes WHERE likes.story_id = stories.id) AS like_count
         FROM stories
         JOIN users ON stories.user_id = users.id
-        WHERE stories.category = $1 AND stories.approved = TRUE
+        WHERE stories.category = ? AND stories.approved = TRUE
         ORDER BY stories.created_at DESC
     """, category)
 
@@ -348,7 +348,7 @@ def profile():
         return redirect("/login")
 
     user_id = session["user_id"]
-    user = db.execute("SELECT * FROM users WHERE id = $1", user_id)[0]
+    user = db.execute("SELECT * FROM users WHERE id = ?", user_id)[0]
 
     stories = db.execute("""
         SELECT stories.id, stories.title, stories.category, stories.created_at,
@@ -357,7 +357,7 @@ def profile():
         FROM stories
         JOIN users ON stories.user_id = users.id
         LEFT JOIN likes ON stories.id = likes.story_id
-        WHERE stories.user_id = $1
+        WHERE stories.user_id = ?
         GROUP BY stories.id, stories.title, stories.category, stories.created_at, stories.approved, users.username
         ORDER BY stories.created_at DESC
     """, user_id)
@@ -389,13 +389,13 @@ def password():
             flash("Password mismatch")
             return redirect("/password")
 
-        user = db.execute("SELECT * FROM users WHERE id = $1", session["user_id"])[0]
+        user = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])[0]
         if not check_password_hash(user["hash"], current_password):
             flash("Current password incorrect")
             return redirect("/password")
 
         new_hash = generate_password_hash(new_password)
-        db.execute("UPDATE users SET hash = $1 WHERE id = $2", new_hash, session["user_id"])
+        db.execute("UPDATE users SET hash = ? WHERE id = ?", new_hash, session["user_id"])
         flash("Password changed successfully")
         return redirect("/profile")
 
