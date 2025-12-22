@@ -203,7 +203,7 @@ def submit():
         db.execute("""
             INSERT INTO stories (user_id, title, category, content, image_path, approved, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, session["user_id"], title, category, content, image_path, FALSE, datetime.utcnow())
+        """, session["user_id"], title, category, content, image_path, False, datetime.utcnow())
         flash("Story submitted for review")
         return redirect("/")
     return render_template("submit.html", categories=categories)
