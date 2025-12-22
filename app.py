@@ -16,13 +16,10 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure database
-DATABASE_URL = "postgresql://zamculture_user:rkolBCyFvGDQhSJ4mUt2fa3U44InXVnT@dpg-d54ic615pdvs73bir6bg-a.frankfurt-postgres.render.com/zamculture_pxun"
-if DATABASE_URL:
-    # Render/Postgres
-    db = SQL(DATABASE_URL)
-else:
-    # Local development (SQLite fallback)
-    db = SQL("sqlite:///zamculture.db")
+# DATABASE_URL from environment (Render / production)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+db = SQL(DATABASE_URL)
 
 # Ensure timezone is UTC
 db.execute("SET timezone = 'UTC'")
