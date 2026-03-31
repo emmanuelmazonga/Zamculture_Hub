@@ -376,9 +376,8 @@ def profile():
 
     return render_template("profile.html", user=user, stories=stories)
 
-# --------------------------------------------------
+
 # Change password
-# --------------------------------------------------
 @app.route("/password", methods=["GET", "POST"])
 def password():
     if not session.get("user_id"):
